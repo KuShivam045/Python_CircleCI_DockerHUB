@@ -2,38 +2,33 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: cimg/base:2024.06
-        auth:
-          username: ${DOCKER_USERNAME}
-          password: ${DOCKER_PASSWORD}
+      - image: cimg/python:3.11
+    steps:
+        - checkout
+        - run:
+            name: install dependencies
+            command: |
+              pip install -r requirements.txt --saave
+  build_docker_image:
+    docker:
+      - image: cimg/python3.11
     steps:
         - checkout
         - setup_remote_docker:
-            version: 20.10.7 # specify Docker version if needed
+            docker_layer_caching: false # specify Docker version if needed
         - run:
             name: Build_Image
             command: |
               TAG=0.1$CIRCLE_BUILD_NUM
               docker build -t djangotask -t shivaay025/djangotask:$TAG .
-  deploy:
-    docker:
-    - image: cimg/base:2024.06
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 20.10.7 # specify Docker version if needed
-      - run: 
-          name: Pushing the Image to Docker_Hub
-          command: |
-              TAG=0.1$CIRCLE_BUILD_NUM
               echo $DOCKER_PASSWORD |  docker login -u shivaay025 --password-stdin 
-              docker push shivaay025/djangotask:$TAG
+              docker push shivaay025/djangotask:$TAG           
 
 workflows:
   build_and_deploy:
     jobs:
       - build
-      - deploy:
+      - build_docker_image:
           requires:
             - build
           filters:
