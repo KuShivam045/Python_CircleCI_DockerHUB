@@ -8,7 +8,7 @@ jobs:
         - run:
             name: install dependencies
             command: |
-              pip install -r requirements.txt --saave
+              pip install -r requirements.txt --save
   build_docker_image:
     docker:
       - image: cimg/python3.11
