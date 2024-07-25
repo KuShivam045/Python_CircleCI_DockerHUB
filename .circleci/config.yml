@@ -8,6 +8,8 @@ jobs:
           password: ${DOCKER_PASSWORD}
     steps:
         - checkout
+        - setup_remote_docker:
+            version: 20.10.7 # specify Docker version if needed
         - run:
             name: Build_Image
             command: |
@@ -18,6 +20,8 @@ jobs:
     - image: cimg/base:2024.06
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 20.10.7 # specify Docker version if needed
       - run: 
           name: Pushing the Image to Docker_Hub
           command: |
